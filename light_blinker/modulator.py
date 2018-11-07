@@ -1,7 +1,9 @@
 from functools import partial
 
+from light_blinker.blink_code import blink
 
-def modulator(t, min_freq=3, max_freq=8, time_period=10):
+
+def _modulator(t, min_freq=3, max_freq=8, time_period=10):
     remainder = t % time_period
 
     if remainder < 5:
@@ -11,7 +13,8 @@ def modulator(t, min_freq=3, max_freq=8, time_period=10):
 
 
 class Modulator:
-    def __init__(self):
+    def __init__(self, port):
+        self._port = port
         self._min_freq = None
         self._max_freq = None
         self._time_period = None
@@ -29,7 +32,9 @@ class Modulator:
         return self
 
     def build(self):
-        return partial(modulator,
+        _mod = partial(_modulator,
                        min_freq=self._min_freq,
                        max_freq=self._max_freq,
                        time_period=self._time_period)
+
+        blink(self._port, _mod)

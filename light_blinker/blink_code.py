@@ -10,6 +10,15 @@ ONE = '1'.encode()
 
 
 def blink(port, func, time_length=None, start_with_on=True):
+    """
+    function to make led light.
+
+    :param port:
+    :param func:
+    :param time_length:
+    :param start_with_on:
+    :return:
+    """
     try:
         device = Serial(port, 9600)
     except SerialException as e:
