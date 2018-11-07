@@ -1,2 +1,1 @@
-arduino==0.1
 pyserial==3.4
