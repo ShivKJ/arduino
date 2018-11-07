@@ -29,8 +29,18 @@ def blink(port, func, baudrate=9600, time_length=None, close_on_exit=False):
     try:
         device = Serial(port, baudrate=baudrate)
     except SerialException as e:
-        print('Check: sudo chown {} {}'.format(getuser(), port))
-        raise e
+        message = str(e)
+
+        if 'Permission denied' in message:  # checking string because even in Permission denied
+            # case, SerialException is thrown.
+            print('file: "{}" has permission access.'
+                  '\nTo change permission: sudo chown {} {}'.format(port, getuser(), port))
+            exit()
+        else:
+            raise e
+    except FileNotFoundError:
+        print('file : {}'.format(port) + ' not found. Check if device is connected or correct the port.')
+        exit()
     else:
         if time_length is None:
             time_length = maxsize
