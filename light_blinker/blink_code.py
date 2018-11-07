@@ -8,8 +8,11 @@ from time import sleep
 ZERO = '0'.encode()
 ONE = '1'.encode()
 
+ON = True
+OFF = False
 
-def blink(port, func, baudrate=9600, time_length=None, start_with_on=True):
+
+def blink(port, func, baudrate=9600, time_length=None, close_on_exit=False):
     """
     function to make led light.
 
@@ -17,7 +20,7 @@ def blink(port, func, baudrate=9600, time_length=None, start_with_on=True):
     :param func:
     :param baudrate:
     :param time_length:
-    :param start_with_on:
+    :param close_on_exit:
     :return:
     """
     try:
@@ -26,25 +29,25 @@ def blink(port, func, baudrate=9600, time_length=None, start_with_on=True):
         print('Check: sudo chown {} {}'.format(getuser(), port))
         raise e
     else:
-
         if time_length is None:
             time_length = maxsize
 
-        status = start_with_on
-
-        if status is True:
-            device.write(ONE)
-        else:
-            device.write(ZERO)
+        # Setting 'status' to OFF so that it will be turn on in first iteration.
+        status = OFF
 
         for t in range(time_length):
+            if status is ON:
+                # as 'status' is ON so turning off the light and updating 'statue' to OFF
+                device.write(ZERO)
+                status = OFF
+            else:
+                # as 'status' is OFF so turning on the light and updating 'status' to ON
+                device.write(ONE)
+                status = ON
+
             sleep(func(t))
 
-            if status is True:
-                device.write(ZERO)
-                status = False
-            else:
-                device.write(ONE)
-                status = True
+        if close_on_exit is True:
+            device.write(ZERO)
 
         device.close()
