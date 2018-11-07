@@ -5,9 +5,12 @@ from serial import Serial
 from serial.serialutil import SerialException
 from time import sleep
 
-ZERO = '0'.encode()
-ONE = '1'.encode()
-
+# --------------------------------------
+# ZERO and ONE will be sent to controller.
+ZERO = b'0'
+ONE = b'1'
+# --------------------------------------
+# defining status of LED bulb
 ON = True
 OFF = False
 
